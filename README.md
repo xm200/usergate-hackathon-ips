@@ -1,2 +1,2 @@
-# goida-ips# usergate-hackathon-ips
+# ips# usergate-hackathon-ips
 # usergate-hackathon-ips

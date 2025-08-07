@@ -13,14 +13,14 @@ NC='\033[0m'
 
 print_banner() {
     echo -e "${BLUE}"
-    echo "  ____       ___ ____    _       ___ ____  ____  "
-    echo " / ___| ___ |_ _|  _ \  / \     |_ _|  _ \/ ___| "
-    echo "| |  _ / _ \ | || | | |/ _ \     | || |_) \___ \ "
-    echo "| |_| | (_) | || |_| / ___ \    | ||  __/ ___) |"
-    echo " \____|\___/___|____/_/   \_\  |___|_|   |____/ "
+    echo "  ___  ____   ____  "
+    echo " |_ _||  _ \\/ ___| "
+    echo "  | | | |_) |\___ \ "
+    echo "  | | |  __/ ___) |"
+    echo " |___||_|   |____/ "
     echo "                                               "
     echo -e "${NC}"
-    echo -e "${GREEN}GoIDA Intrusion Prevention System${NC}"
+    echo -e "${GREEN}Intrusion Prevention System${NC}"
     echo -e "${YELLOW}Minimalistic High-Performance IDS/IPS${NC}"
     echo
 }
@@ -114,9 +114,9 @@ configure_system() {
 create_service_file() {
     echo -e "${BLUE}Creating systemd service file...${NC}"
 
-    cat > /etc/systemd/system/goida-ips.service << EOF
+    cat > /etc/systemd/system/ips.service << EOF
 [Unit]
-Description=GoIDA Intrusion Prevention System
+Description=Intrusion Prevention System
 After=network.target
 Wants=network.target
 
@@ -184,32 +184,6 @@ test_installation() {
     echo -e "${GREEN}Installation test passed${NC}"
 }
 
-show_usage() {
-    echo -e "${BLUE}Usage Instructions:${NC}"
-    echo
-    echo -e "${YELLOW}1. Start the service:${NC}"
-    echo "   systemctl start goida-ips"
-    echo
-    echo -e "${YELLOW}2. Enable auto-start:${NC}"
-    echo "   systemctl enable goida-ips"
-    echo
-    echo -e "${YELLOW}3. Check status:${NC}"
-    echo "   systemctl status goida-ips"
-    echo
-    echo -e "${YELLOW}4. View logs:${NC}"
-    echo "   journalctl -u goida-ips -f"
-    echo
-    echo -e "${YELLOW}5. View metrics:${NC}"
-    echo "   curl http://127.0.0.1:8080/stats"
-    echo
-    echo -e "${YELLOW}6. Manual run (for testing):${NC}"
-    echo "   python3 main.py"
-    echo
-    echo -e "${YELLOW}7. Edit configuration:${NC}"
-    echo "   nano config.yaml"
-    echo
-}
-
 main() {
     print_banner
 
@@ -229,7 +203,7 @@ main() {
     show_iptables_setup
     show_usage
 
-    echo -e "${BLUE}Setup complete. GoIDA IPS is ready to use.${NC}"
+    echo -e "${BLUE}Setup complete. IPS is ready to use.${NC}"
 }
 
 main "$@"

@@ -190,7 +190,7 @@ def main():
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
 
-    print("Traffic Generator for GoIDA IPS Testing")
+    print("Traffic Generator for IPS Testing")
     print("=" * 40)
     print(f"Target: {args.host}:{args.port}")
     print("Press Ctrl+C to stop")

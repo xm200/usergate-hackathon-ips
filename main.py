@@ -143,7 +143,7 @@ class IDSIPSSystem:
     def run(self):
         self.check_privileges()
 
-        print("Starting GOIDA IPS...")
+        print("Starting IPS...")
         print(f"Process ID: {os.getpid()}")
 
         signal.signal(signal.SIGINT, self.signal_handler)
