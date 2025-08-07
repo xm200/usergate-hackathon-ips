@@ -76,6 +76,7 @@ class PacketWorker:
                     if len(scan_data) != 60:
                         packet.drop()
                         self.stats['packets_dropped'] += 1
+                        syslog.syslog(f"[DROP] {src_ip} -> {dst_ip}; proto: {protocol}; Strange icmp requestclea")
 
                 elif ip.p == dpkt.ip.IP_PROTO_UDP: 
                     udp = ip.data
@@ -117,6 +118,7 @@ class PacketWorker:
 
                 packet.accept()
                 self.stats['packets_accepted'] += 1
+                syslog.syslog(f"[ACCEPT] {src_ip} -> {dst_ip}; proto: {protocol}; Packet doesnt match any rules")
 
             except Exception as e:
                 packet.accept()
@@ -186,7 +188,7 @@ class PacketWorker:
         finally:
             self.flush_logs()
             self.nfqueue.unbind()
-            
+
 
     def get_stats(self):
         stats = self.stats.copy()
