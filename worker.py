@@ -5,7 +5,7 @@ import socket
 import os
 import dpkt
 from netfilterqueue import NetfilterQueue
-from matcher import MatcherEngine
+import syslog
 from reassembler import StreamReassembler
 
 class PacketWorker:
@@ -51,6 +51,7 @@ class PacketWorker:
                 src_port = dst_port = 0
                 payload = b''
 
+
                 if ip.p == dpkt.ip.IP_PROTO_TCP:
                     tcp = ip.data
                     protocol = 'tcp'
@@ -88,29 +89,30 @@ class PacketWorker:
                     )
 
                     scan_data = self.reassembler.add_udp_datagram(flow_key, payload)
+
                 else:
                     packet.accept()
                     self.stats['packets_accepted'] += 1
+                    syslog.syslog(1, f"[ACCEPT] {src_ip} -> {dst_ip} proto: {protocol}; Uncheckable protocol")
                     return "1" + ip.get_proto(ip.p)
+                
+
                 if not scan_data:
                     packet.accept()
                     self.stats['packets_accepted'] += 1
+                    syslog.syslog(1, f"[ACCEPT] {src_ip} -> {dst_ip}; proto: {protocol}; No scan data present")
                     return "2" + ip.get_proto(ip.p)
 
-                '''print(scan_data)
-                matches = self.matcher.match(scan_data, protocol)'''
-                #print(matches)
                 matches = self.matcher.match(scan_data, protocol)
                 if len(matches) > 0:
                     for match in matches:
                         if match['action'] == 'drop' and len(match['matches']) > 0:
                             #self.log_match(match, flow_key, src_ip, dst_ip, src_port, dst_port, protocol)
                             packet.drop()
-                            print("packet droppeds")
-                            print(matches)
+                            syslog.syslog(f"[DROP] {src_ip} -> {dst_ip}; proto: {protocol}; Found matches: {matches}")
                             self.stats['packets_dropped'] += 1
                             self.stats['matches_found'] += 1
-                            return "3"
+                            return
                 
 
                 packet.accept()
@@ -119,13 +121,15 @@ class PacketWorker:
             except Exception as e:
                 packet.accept()
                 self.stats['packets_accepted'] += 1
-                return str(e) + ' 4'
+                syslog.syslog(f"[ERROR] {src_ip} -> {dst_ip}; Error: {str(e)}")
+                return
 
         except Exception as e:
             try:
                 packet.accept()
                 self.stats['packets_accepted'] += 1
-                return str(e) + ' 5'
+                syslog.syslog(f"[ERROR] {src_ip} -> {dst_ip}; Error: {str(e)}")
+                return 
             except:
                 pass
 
@@ -134,9 +138,11 @@ class PacketWorker:
             self.reassembler.prune_flows()
             self.last_prune = current_time
 
+
         if current_time - self.last_log_flush > self.config.get('log_flush_interval', 60):
             self.flush_logs()
             self.last_log_flush = current_time
+
 
     def log_match(self, match, flow_key, src_ip, dst_ip, src_port, dst_port, protocol):
         alert = {
@@ -152,6 +158,7 @@ class PacketWorker:
             'type': match['type']
         }
         self.alerts.append(alert)
+
 
     def flush_logs(self):
         if not self.alerts:
@@ -169,6 +176,7 @@ class PacketWorker:
         except Exception as e:
             pass
 
+
     def run(self):
         self.setup()
         try:
@@ -178,6 +186,7 @@ class PacketWorker:
         finally:
             self.flush_logs()
             self.nfqueue.unbind()
+            
 
     def get_stats(self):
         stats = self.stats.copy()
