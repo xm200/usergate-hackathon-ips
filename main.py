@@ -18,8 +18,6 @@ class IDSIPSSystem:
         self.metrics_server = None
         self.metrics_process = None
         self.running = True
-        os.system(f"iptables -A INPUT -j NFQUEUE")
-        os.system(f"iptables -A OUTPUT -j NFQUEUE")
 
     def load_config(self, config_file):
         try:
@@ -65,6 +63,8 @@ class IDSIPSSystem:
             )
             worker_process.start()
             self.workers.append(worker_process)
+            os.system(f"iptables -I INPUT -j NFQUEUE --queue-num {queue_id}")
+            os.system(f"iptables -I OUTPUT -j NFQUEUE --queue-num {queue_id}")
             print(f"Started worker for queue {queue_id} (PID: {worker_process.pid})")
 
     def worker_main(self, queue_id, config, shared_stats):
@@ -143,7 +143,7 @@ class IDSIPSSystem:
     def run(self):
         self.check_privileges()
 
-        print("Starting IPS...")
+        print("Starting GOIDA IPS...")
         print(f"Process ID: {os.getpid()}")
 
         signal.signal(signal.SIGINT, self.signal_handler)
@@ -170,8 +170,9 @@ class IDSIPSSystem:
         except KeyboardInterrupt:
             pass
         finally:
-            os.system(f"iptables -D INPUT -j NFQUEUE")
-            os.system(f"iptables -D OUTPUT -j NFQUEUE")
+            for i in range(self.config.get("queues", 4)):
+                os.system(f"iptables -D INPUT -j NFQUEUE --queue-num {i}")
+                os.system(f"iptables -D OUTPUT -j NFQUEUE --queue-num {i}")
             self.shutdown()
 
 def main():
