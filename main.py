@@ -103,8 +103,6 @@ class IDSIPSSystem:
         original_callback = worker.packet_callback
         def enhanced_callback(packet):
             result = original_callback(packet)
-            if result is not None:
-                os.system(f"echo \"{result + '\n'}\" >> packet_log.txt")
             stats_updater()
             return result
 
