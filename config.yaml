@@ -1,0 +1,190 @@
+queues: 1
+max_buffer_size: 65536
+flow_timeout: 60
+log_flush_interval: 60
+max_scan_window: 8192
+
+http_metrics:
+    host: "127.0.0.1"
+    port: 8080
+
+rules:
+    - id: 1
+      type: "regex"
+      pattern: "malware"
+      protocol: "any"
+      action: "drop"
+
+    - id: 2
+      type: "regex"
+      pattern: "shell"
+      protocol: "tcp"
+      action: "drop"
+
+    - id: 3
+      type: "regex"
+      pattern: "GET.*.php?.*"
+      protocol: "tcp"
+      action: "drop"
+
+    - id: 4
+      type: "regex"
+      pattern: "exec"
+      protocol: "any"
+      action: "drop"
+
+    - id: 5
+      type: "regex"
+      pattern: "touch *"
+      protocol: "tcp"
+      action: "drop"
+
+    - id: 6
+      type: "regex"
+      protocol: "tcp"
+      pattern: "P\x00a\x00y\x00l\x00o\x00a\x00d\x00*"
+      action: "drop"
+
+    - id: 7
+      type: "regex"
+      protocol: "tcp"
+      pattern: "[.]{2}.*"
+      action: "drop"
+    
+    - id: 8
+      type: "regex"
+      protocol: "tcp"
+      pattern: "/pages/createpage-entervariables.action"
+      action: "drop"
+    
+    - id: 9
+      type: "regex"
+      protocol: "tcp"
+      pattern: "cmd.exe"
+      action: "drop"
+
+    - id: 10
+      type: "regex"
+      protocol: "tcp"
+      pattern: "PowerShell.exe"
+      action: "drop"
+    
+    - id: 11
+      type: "regex"
+      protocol: "tcp"
+      pattern: "powershell"
+      action: "drop"
+    
+    - id: 12
+      type: "regex"
+      protocol: "tcp"
+      pattern: "remote_agent"
+      action: "drop"
+
+    - id: 13
+      type: "regex"
+      protocol: "tcp"
+      pattern: ".*bin.*sh"
+      action: "drop"
+    
+    - id: 14
+      type: "regex"
+      protocol: "tcp"
+      pattern: "?PHPRC=*"
+      action: "drop"
+
+    - id: 15
+      type: "regex"
+      protocol: "tcp"
+      pattern: "SSH-chisel-v3-server"
+      action: "drop"
+
+    - id: 15
+      type: "regex"
+      protocol: "tcp"
+      pattern: "\x53\x53\x48\x2d\x63\x68\x69\x73\x65\x6c\x2d\x76\x33\x2d\x73\x65\x72\x76\x65\x72\x0d\x0a"
+      action: "drop"
+
+    - id: 16
+      type: "regex"
+      protocol: "tcp"
+      pattern: "MAIL FROM: oGQw9rre97vj2K7zqFxo7ka@hZGx.us"
+      action: "drop"
+
+    - id: 17
+      type: "regex"
+      protocol: "tcp"
+      pattern: "eicar"
+      action: "drop"
+    
+    - id: 18
+      type: "regex"
+      protocol: "tcp"
+      pattern: "bXbMLBDOsyyDmnczIl.EXE"
+      action: "drop"
+
+    - id: 19
+      type: "regex"
+      protocol: "tcp"
+      pattern: "ekZmLbXyN.EXe"
+      action: "drop"
+
+    - id: 20
+      type: "regex"
+      protocol: "tcp"
+      pattern: "GET /kGX1GviRzEyF3HlchhtJh1UheP?8656=c996D37yx HTTP/1.1"
+      action: "drop"
+
+    - id: 21
+      type: "regex"
+      protocol: "tcp"
+      pattern: "GET /2MQMNSwLwc6Dt0le3DOl.DLL HTTP/1.1"
+      action: "drop"
+
+    - id: 22
+      type: "regex"
+      protocol: "tcp"
+      pattern: "GET /Ug4jlB.XLs HTTP/1.1"
+      action: "drop"
+
+    - id: 23
+      type: "regex"
+      protocol: "tcp"
+      pattern: "GET /NF4ijiyCrbO0vtSTm.pS1 HTTP/1.1"
+      action: "drop"
+
+    - id: 24
+      type: "regex"
+      protocol: "tcp"
+      pattern: "GET /01HDpoSvatVb6tbMJV.dLL HTTP/1.1"
+      action: "drop"
+
+    - id: 25
+      type: "regex"
+      protocol: "tcp"
+      pattern: "masscan"
+      action: "drop"
+
+    - id: 26
+      type: "regex"
+      protocol: "tcp"
+      pattern: "anonymous"
+      action: "drop"
+
+    - id: 27
+      type: "regex"
+      protocol: "tcp"
+      pattern: "admin_l*"
+      action: "drop"
+
+    - id: 28
+      type: "regex"
+      protocol: "tcp"
+      pattern: "spoolss"
+      action: "drop"
+
+    - id: 29
+      type: "regex"
+      protocol: "tcp"
+      pattern: "MAIL FROM:<;nslookup {{interactsh-url}};>.*RCPT TO:<root>"
+      action: "drop"
