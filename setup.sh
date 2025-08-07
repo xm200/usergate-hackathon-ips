@@ -13,11 +13,11 @@ NC='\033[0m'
 
 print_banner() {
     echo -e "${BLUE}"
-    echo "  ___  ____   ____  "
-    echo " |_ _||  _ \\/ ___| "
-    echo "  | | | |_) |\___ \ "
-    echo "  | | |  __/ ___) |"
-    echo " |___||_|   |____/ "
+    echo " ___ ____  ____  "
+    echo "|_ _|  _ \/ ___| "
+    echo " | || |_) \___ \ "
+    echo " | ||  __/ ___) |"
+    echo "|___|_|   |____/ "
     echo "                                               "
     echo -e "${NC}"
     echo -e "${GREEN}Intrusion Prevention System${NC}"
@@ -86,18 +86,6 @@ install_python_deps() {
     echo -e "${GREEN}Python dependencies installed${NC}"
 }
 
-setup_directories() {
-    echo -e "${BLUE}Setting up directories...${NC}"
-
-    mkdir -p logs
-    mkdir -p alerts
-    mkdir -p pcaps
-
-    chown -R $SUDO_USER:$SUDO_USER logs alerts pcaps 2>/dev/null || true
-
-    echo -e "${GREEN}Directories created${NC}"
-}
-
 configure_system() {
     echo -e "${BLUE}Configuring system settings...${NC}"
 
@@ -109,35 +97,6 @@ configure_system() {
     sysctl -p
 
     echo -e "${GREEN}System configured for high performance${NC}"
-}
-
-create_service_file() {
-    echo -e "${BLUE}Creating systemd service file...${NC}"
-
-    cat > /etc/systemd/system/ips.service << EOF
-[Unit]
-Description=Intrusion Prevention System
-After=network.target
-Wants=network.target
-
-[Service]
-Type=simple
-User=root
-Group=root
-WorkingDirectory=$SCRIPT_DIR
-ExecStart=/usr/bin/python3 $SCRIPT_DIR/main.py
-Restart=always
-RestartSec=5
-StandardOutput=journal
-StandardError=journal
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-    systemctl daemon-reload
-
-    echo -e "${GREEN}Service file created${NC}"
 }
 
 show_iptables_setup() {
@@ -191,9 +150,6 @@ main() {
     check_system
     install_system_deps
     install_python_deps
-    setup_directories
-    configure_system
-    create_service_file
     test_installation
 
     echo
